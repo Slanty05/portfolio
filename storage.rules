@@ -1,0 +1,26 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null
+        && (
+          request.auth.token.email == 'mabakaro02@gmail.com'
+          // Optional hardening: add admin UID(s) here.
+          // || request.auth.uid == 'YOUR_UID_HERE'
+        );
+    }
+
+    // Public CV reads (shareable download URL)
+    match /cv/latest.pdf {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Everything else (optional hardening): deny writes.
+    match /{allPaths=**} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}
+

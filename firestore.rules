@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && (
+          request.auth.token.email == 'mabakaro02@gmail.com'
+          // Optional hardening: add admin UID(s) here.
+          // || request.auth.uid == 'YOUR_UID_HERE'
+        );
+    }
+
+    // Public portfolio reads
+    match /portfolio/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public projects reads
+    match /portfolio_projects/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public experience reads
+    match /portfolio_experience/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
+

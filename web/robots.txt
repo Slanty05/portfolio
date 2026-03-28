@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Allow search engines to crawl all important files
+Allow: /flutter.js
+Allow: /main.dart.js
+Allow: /assets/
+Allow: /icons/
+Allow: /favicon.png
+
+# Disallow build artifacts and development files
+Disallow: /flutter_service_worker.js
+Disallow: /flutter.js.map
+Disallow: /main.dart.js.map
+
+# Sitemap location
+Sitemap: https://bakar.dev/sitemap.xml
+
+# Crawl delay (optional - be nice to servers)
+Crawl-delay: 1
