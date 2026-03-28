@@ -29,7 +29,13 @@ jobs:
       # 4. Build Flutter web app
       - name: Build Flutter web app
         run: |
-          flutter build web --base-href "https://portfolio-8ed95.web.app/"
+          if (Test-Path "scripts\build-web.ps1") {
+            & scripts\build-web.ps1
+          } else {
+            flutter build web --base-href "https://portfolio-8ed95.web.app/"
+            # Fallback: copy favicon manually
+            Copy-Item "web/favicon.svg" "build/web/favicon.svg" -Force
+          }
           
       # 5. Deploy to Firebase Hosting
       - name: Deploy to Firebase Hosting
