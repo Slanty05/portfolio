@@ -1,14 +1,19 @@
 {
-    "name": "portfolio",
-    "short_name": "portfolio",
+    "name": "Muhammad Abu Bakar Portfolio",
+    "short_name": "Portfolio",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A scalable Flutter portfolio platform built using Clean Architecture, Riverpod state management, and Firebase backend services. The project targets Web, Android, and iOS and features dynamic content management via Firestore, responsive UI design, multilingual support, theme persistence with Hive, advanced scroll animations, and modular feature-based architecture.",
+    "background_color": "#0A192F",
+    "theme_color": "#0A192F",
+    "description": "Senior Flutter Developer Portfolio - Premium mobile and web applications with 20+ years of experience. Clean Architecture, Riverpod state management, Firebase backend.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
+        {
+            "src": "favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        },
         {
             "src": "icons/Icon-192.png",
             "sizes": "192x192",
