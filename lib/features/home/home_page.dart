@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'data/cv_repository.dart';
 import 'data/profile_repository.dart';
 import 'data/skills_repository.dart';
+import 'domain/profile.dart';
+import '../../core/responsive/breakpoints.dart';
 import '../../core/ui/app_states.dart';
 
 class HomePage extends ConsumerWidget {
@@ -20,50 +22,60 @@ class HomePage extends ConsumerWidget {
     return profileAsync.when(
       data: (profile) {
         final cvUrl = cvAsync.valueOrNull;
+        final width = MediaQuery.sizeOf(context).width;
+        final useSliverAppBar = width <= Breakpoints.tabletMax;
+
         return CustomScrollView(
           slivers: [
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 230,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(profile.name, overflow: TextOverflow.ellipsis),
-                background: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        theme.colorScheme.primaryContainer,
-                        theme.colorScheme.surface,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+            if (useSliverAppBar)
+              SliverAppBar(
+                pinned: true,
+                expandedHeight: 230,
+                scrolledUnderElevation: 0,
+                surfaceTintColor: Colors.transparent,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text(profile.name, overflow: TextOverflow.ellipsis),
+                  background: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.colorScheme.primaryContainer,
+                          theme.colorScheme.surface,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                     ),
-                  ),
-                  child: SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Hero(
-                            tag: 'portfolio_logo',
-                            child: CircleAvatar(
-                              radius: 26,
-                              backgroundColor: theme.colorScheme.primary,
-                              child: Icon(
-                                Icons.flutter_dash_rounded,
-                                color: theme.colorScheme.onPrimary,
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Hero(
+                              tag: 'portfolio_logo',
+                              child: CircleAvatar(
+                                radius: 26,
+                                backgroundColor: theme.colorScheme.primary,
+                                child: Icon(
+                                  Icons.flutter_dash_rounded,
+                                  color: theme.colorScheme.onPrimary,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(profile.title, style: theme.textTheme.titleMedium),
-                        ],
+                            const SizedBox(height: 10),
+                            Text(profile.title, style: theme.textTheme.titleMedium),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
+              )
+            else
+              SliverToBoxAdapter(
+                child: _DesktopHomeHeader(profile: profile, theme: theme),
               ),
-            ),
             SliverPadding(
               padding: const EdgeInsets.all(16),
               sliver: SliverList.list(
@@ -170,6 +182,83 @@ class HomePage extends ConsumerWidget {
     final uri = Uri.tryParse(link.trim());
     if (uri == null) return;
     await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+}
+
+/// Desktop / wide web: hero content only — no [SliverAppBar] (shell already has rail + title).
+class _DesktopHomeHeader extends StatelessWidget {
+  const _DesktopHomeHeader({required this.profile, required this.theme});
+
+  final Profile profile;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1100),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                colors: [
+                  theme.colorScheme.primaryContainer,
+                  theme.colorScheme.surface,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              border: Border.all(
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.25),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Hero(
+                    tag: 'portfolio_logo',
+                    child: CircleAvatar(
+                      radius: 36,
+                      backgroundColor: theme.colorScheme.primary,
+                      child: Icon(
+                        Icons.flutter_dash_rounded,
+                        color: theme.colorScheme.onPrimary,
+                        size: 36,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          profile.name,
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          profile.title,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

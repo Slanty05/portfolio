@@ -22,6 +22,8 @@ class ExperiencePage extends ConsumerWidget {
         SliverAppBar(
           pinned: true,
           expandedHeight: 140,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
           flexibleSpace: FlexibleSpaceBar(
             title: const Text('Experience'),
             background: DecoratedBox(

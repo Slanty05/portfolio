@@ -12,6 +12,11 @@ class AppTheme {
 
     return base.copyWith(
       visualDensity: VisualDensity.standard,
+      appBarTheme: const AppBarTheme(
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
     );
   }
 
@@ -25,6 +30,11 @@ class AppTheme {
 
     return base.copyWith(
       visualDensity: VisualDensity.standard,
+      appBarTheme: const AppBarTheme(
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
     );
   }
 }

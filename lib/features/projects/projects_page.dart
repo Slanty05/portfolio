@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/responsive/breakpoints.dart';
 import '../../core/ui/app_states.dart';
 import 'data/projects_repository.dart';
 import 'data/models/project_model.dart';
@@ -33,23 +34,43 @@ class ProjectsPage extends ConsumerWidget {
             );
           }
 
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Text(
-                'Featured Projects',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
+          final width = MediaQuery.sizeOf(context).width;
+          final columns = Breakpoints.projectGridCrossAxisCount(width);
+          final tileExtent = Breakpoints.projectGridMainAxisExtent(width);
+
+          return CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Featured Projects',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ).animate().fadeIn(duration: 250.ms),
                 ),
-              ).animate().fadeIn(duration: 250.ms),
-              const SizedBox(height: 12),
-              for (var i = 0; i < items.length; i++) ...[
-                ProjectShowcaseCard(model: items[i])
-                    .animate()
-                    .fadeIn(delay: (80 * i).ms, duration: 300.ms)
-                    .slideY(begin: 0.12, end: 0, duration: 300.ms),
-                const SizedBox(height: 12),
-              ],
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                sliver: SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: columns,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    mainAxisExtent: tileExtent,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return ProjectShowcaseCard(model: items[index])
+                          .animate()
+                          .fadeIn(delay: (80 * index).ms, duration: 300.ms)
+                          .slideY(begin: 0.12, end: 0, duration: 300.ms);
+                    },
+                    childCount: items.length,
+                  ),
+                ),
+              ),
             ],
           );
         },
@@ -96,7 +117,9 @@ class ProjectShowcaseCard extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -172,6 +195,7 @@ class ProjectShowcaseCard extends StatelessWidget {
                 ],
               ),
             ],
+            ),
           ),
         ),
       ),
