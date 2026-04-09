@@ -18,24 +18,16 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
-          channel: 'stable'
+          channel: stable
           cache: true
-          
+
       # 3. Get Flutter dependencies
       - name: Install dependencies
         run: flutter pub get
-        
-      # 4. Build Flutter web app
+
+      # 4. Build Flutter web app (bash — ubuntu-latest, not PowerShell)
       - name: Build Flutter web app
-        run: |
-          if (Test-Path "scripts\build-web.ps1") {
-            & scripts\build-web.ps1
-          } else {
-            flutter build web --base-href "https://portfolio-8ed95.web.app/"
-            # Fallback: copy favicon manually
-            Copy-Item "web/favicon.svg" "build/web/favicon.svg" -Force
-          }
+        run: bash scripts/build-web.sh
           
       # 5. Deploy to Firebase Hosting
       - name: Deploy to Firebase Hosting
